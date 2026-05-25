@@ -119,6 +119,25 @@ for repo_url in CUSTOM_NODES:
         print(f"   no install.py or requirements.txt for {name} (nothing to do)")
 
 
+# === Step 2b: pin KJNodes to 1.2.0 ==========================================
+# The runpod/comfyui image ships KJNodes at latest; this pins it to 1.2.0
+# via ComfyUI-Manager, replicating the manual "Switch Ver" action.
+print("\n" + "=" * 60)
+print(" STEP 2b: pin ComfyUI-KJNodes to 1.2.0")
+print("=" * 60)
+cm_cli = os.path.join(custom_nodes, "ComfyUI-Manager", "cm-cli.py")
+if os.path.exists(cm_cli):
+    cm_env = os.environ.copy()
+    cm_env["COMFYUI_PATH"] = COMFY_DIR
+    print("Pinning comfyui-kjnodes to 1.2.0 ...")
+    subprocess.run(
+        [py, cm_cli, "install", "comfyui-kjnodes@1.2.0"],
+        env=cm_env, check=False,
+    )
+else:
+    print(f"cm-cli.py not found at {cm_cli} - skipping KJNodes pin")
+
+
 # === Step 2c: install workflow ==============================================
 # Copy the Jerry_base_new.json workflow into ComfyUI's workflows folder.
 print("\n" + "=" * 60)
