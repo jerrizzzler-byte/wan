@@ -7,8 +7,7 @@ import subprocess
 # CONFIG  --  edit these if paths change
 # ======================================================================
 COMFY_DIR     = "/workspace/runpod-slim/ComfyUI"
-list_file     = "/workspace/Files/downloader/download.txt"
-
+list_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "download.txt")
 models_base   = os.path.join(COMFY_DIR, "models")
 custom_nodes  = os.path.join(COMFY_DIR, "custom_nodes")
 # ComfyUI runs inside this venv -- pip installs MUST target it
