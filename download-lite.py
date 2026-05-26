@@ -158,7 +158,7 @@ else:
 print("\n" + "=" * 60)
 print(" STEP 2c: install workflow")
 print("=" * 60)
-WORKFLOW_URL = "https://raw.githubusercontent.com/jerrizzzler-byte/wan/main/Jerry_base_new.json"
+WORKFLOW_URL = "https://raw.githubusercontent.com/jerrizzzler-byte/wan/main/Jerry_base_fixed.json"
 os.makedirs(workflows_dir, exist_ok=True)
 workflow_dest = os.path.join(workflows_dir, "Jerry_base_new.json")
 print(f"Downloading workflow to {workflow_dest} ...")
