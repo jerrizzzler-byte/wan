@@ -12,6 +12,7 @@ models_base   = os.path.join(COMFY_DIR, "models")
 custom_nodes  = os.path.join(COMFY_DIR, "custom_nodes")
 # ComfyUI runs inside this venv -- pip installs MUST target it
 COMFY_PYTHON  = os.path.join(COMFY_DIR, ".venv-cu128", "bin", "python")
+workflows_dir = os.path.join(COMFY_DIR, "user", "default", "workflows")
 
 # Paste your Hugging Face token here, OR leave "" to use the HF_TOKEN env var.
 HF_TOKEN = ""
@@ -142,6 +143,21 @@ if os.path.exists(cm_cli):
     )
 else:
     print(f"cm-cli.py not found at {cm_cli} - skipping KJNodes pin")
+# === Step 2c: install workflow ==========================================
+print("\n" + "=" * 60)
+print(" STEP 2c: install workflow")
+print("=" * 60)
+WORKFLOW_URL = "https://raw.githubusercontent.com/jerrizzzler-byte/wan/main/Jerry_base_fixed.json"
+os.makedirs(workflows_dir, exist_ok=True)
+workflow_dest = os.path.join(workflows_dir, "Jerry_base_fixed.json")
+print(f"Downloading workflow to {workflow_dest} ...")
+_rc = subprocess.run(
+    ["curl", "-sL", WORKFLOW_URL, "-o", workflow_dest], check=False
+).returncode
+if _rc == 0 and os.path.exists(workflow_dest) and os.path.getsize(workflow_dest) > 0:
+    print("\u2705 Workflow installed.")
+else:
+    print("\u274c Failed to download workflow (ComfyUI will still run).")
 
 
 # === Step 3: models =========================================================
