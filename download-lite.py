@@ -39,8 +39,6 @@ HF_TOKEN = ""
 # Dependencies are auto-handled: install.py is run if present,
 # otherwise requirements.txt is pip-installed.
 CUSTOM_NODES = [
-    "https://github.com/ltdrdata/ComfyUI-Manager",
-    "https://github.com/kijai/ComfyUI-KJNodes",
     "https://github.com/giriss/comfy-image-saver",
     "https://github.com/SLAPaper/ComfyUI-Image-Selector",
     "https://github.com/comfyuistudio/ComfyUI-Studio-nodes",
@@ -127,21 +125,27 @@ for repo_url in CUSTOM_NODES:
 print("\n" + "=" * 60)
 print(" STEP 2b: pin ComfyUI-KJNodes to 1.2.0")
 print("=" * 60)
-cm_cli = os.path.join(custom_nodes, "ComfyUI-Manager", "cm-cli.py")
-if os.path.exists(cm_cli):
-    cm_env = os.environ.copy()
-    cm_env["COMFYUI_PATH"] = COMFY_DIR
-    # cm-cli.py imports ComfyUI's own `utils` package, so ComfyUI's root
-    # must be on PYTHONPATH and used as the working directory.
-    existing_pp = cm_env.get("PYTHONPATH", "")
-    cm_env["PYTHONPATH"] = COMFY_DIR + (os.pathsep + existing_pp if existing_pp else "")
-    print("Pinning comfyui-kjnodes to 1.2.0 ...")
-    subprocess.run(
-        [py, cm_cli, "install", "comfyui-kjnodes@1.2.0"],
-        env=cm_env, cwd=COMFY_DIR, check=False,
-    )
+# Pin KJNodes to registry version 1.2.0 by checking out the exact git
+# commit (5b15f29, "version 1.2.0", dated 2025-12-09). No ComfyUI-Manager.
+KJNODES_REPO   = "https://github.com/kijai/ComfyUI-KJNodes"
+KJNODES_COMMIT = "5b15f292ac3edd1f54536733033555139c9eea12"  # = version 1.2.0
+kj_dir = os.path.join(custom_nodes, "ComfyUI-KJNodes")
+
+if not os.path.isdir(kj_dir):
+    print("KJNodes not present - cloning ...")
+    run(["git", "clone", KJNODES_REPO, kj_dir])
 else:
-    print(f"cm-cli.py not found at {cm_cli} - skipping KJNodes pin")
+    print("KJNodes already present.")
+
+if not os.path.isdir(os.path.join(kj_dir, ".git")):
+    print("ERROR: KJNodes folder exists but is not a git repo - cannot pin.")
+else:
+    run(["git", "fetch", "--all"], cwd=kj_dir)
+    run(["git", "checkout", KJNODES_COMMIT], cwd=kj_dir)
+    kj_req = os.path.join(kj_dir, "requirements.txt")
+    if os.path.exists(kj_req):
+        print("Installing KJNodes requirements ...")
+        run([py, "-m", "pip", "install", "-r", kj_req])
 
 
 # === Step 2c: install workflow ==============================================
