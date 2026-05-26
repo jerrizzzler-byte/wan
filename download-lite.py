@@ -131,10 +131,14 @@ cm_cli = os.path.join(custom_nodes, "ComfyUI-Manager", "cm-cli.py")
 if os.path.exists(cm_cli):
     cm_env = os.environ.copy()
     cm_env["COMFYUI_PATH"] = COMFY_DIR
+    # cm-cli.py imports ComfyUI's own `utils` package, so ComfyUI's root
+    # must be on PYTHONPATH and used as the working directory.
+    existing_pp = cm_env.get("PYTHONPATH", "")
+    cm_env["PYTHONPATH"] = COMFY_DIR + (os.pathsep + existing_pp if existing_pp else "")
     print("Pinning comfyui-kjnodes to 1.2.0 ...")
     subprocess.run(
         [py, cm_cli, "install", "comfyui-kjnodes@1.2.0"],
-        env=cm_env, check=False,
+        env=cm_env, cwd=COMFY_DIR, check=False,
     )
 else:
     print(f"cm-cli.py not found at {cm_cli} - skipping KJNodes pin")
