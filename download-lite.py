@@ -39,6 +39,8 @@ HF_TOKEN = ""
 # Dependencies are auto-handled: install.py is run if present,
 # otherwise requirements.txt is pip-installed.
 CUSTOM_NODES = [
+    "https://github.com/ltdrdata/ComfyUI-Manager",
+    "https://github.com/kijai/ComfyUI-KJNodes",
     "https://github.com/giriss/comfy-image-saver",
     "https://github.com/SLAPaper/ComfyUI-Image-Selector",
     "https://github.com/comfyuistudio/ComfyUI-Studio-nodes",
